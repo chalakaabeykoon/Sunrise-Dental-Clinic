@@ -43,62 +43,133 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; }
 
-        /* Navbar Theme */
+        /* ===== LEFT SIDEBAR NAVIGATION ===== */
         .navbar {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            padding: 16px 6%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow-md);
-            position: sticky;
+            position: fixed;
+            left: 0;
             top: 0;
-            z-index: 100;
+            width: 270px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 4px 0 20px rgba(15, 23, 42, 0.12);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .navbar-top {
+            width: 100%;
         }
 
         .navbar .brand {
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 800;
             color: white;
             display: flex;
             align-items: center;
             gap: 12px;
             letter-spacing: -0.5px;
+            padding: 4px 8px 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.10);
         }
 
         .navbar .brand i {
             color: var(--accent);
-            font-size: 24px;
+            font-size: 23px;
             background: rgba(56, 189, 248, 0.15);
             padding: 10px;
             border-radius: 12px;
         }
 
-        .user-info { display: flex; align-items: center; gap: 20px; }
+        .sidebar-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #94a3b8;
+            font-weight: 800;
+            padding: 26px 10px 10px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .sidebar-nav button {
+            width: 100%;
+            padding: 13px 15px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #cbd5e1;
+            border-radius: 11px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-nav button i {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .sidebar-nav button:hover {
+            background: rgba(255,255,255,0.07);
+            color: white;
+            transform: translateX(2px);
+        }
+
+        .sidebar-nav button.active {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            box-shadow: 0 7px 18px rgba(2, 132, 199, 0.25);
+        }
+
+        .sidebar-bottom {
+            border-top: 1px solid rgba(255,255,255,0.10);
+            padding-top: 18px;
+        }
+
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 8px 16px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            font-size: 14px;
+            background: rgba(255, 255, 255, 0.07);
+            padding: 11px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            font-size: 13px;
             font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 10px;
         }
 
         .user-profile i { color: var(--accent); }
 
         .btn-logout {
-            background: rgba(239, 68, 68, 0.2);
+            width: 100%;
+            background: rgba(239, 68, 68, 0.14);
             color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 8px 18px;
-            border-radius: 20px;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            padding: 11px 14px;
+            border-radius: 11px;
             text-decoration: none;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             transition: all 0.3s ease;
         }
 
@@ -108,10 +179,54 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        /* Container Layout */
-        .container { padding: 35px 6%; max-width: 1350px; margin: auto; }
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 270px;
+            min-height: 100vh;
+        }
 
-        /* Stats Cards Widgets */
+        .top-header {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-header h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .top-header p {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        /* Container Layout */
+        .container { padding: 30px 35px 40px; max-width: 1500px; margin: auto; }
+
+        /* Mobile sidebar */
+        .mobile-menu {
+            display: none;
+            border: none;
+            background: var(--secondary);
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+                /* Stats Cards Widgets */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -150,55 +265,8 @@
         .stat-details h4 { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-details p { font-size: 24px; font-weight: 800; color: var(--text-main); margin-top: 4px; }
 
-        /* Modern Navigation Tabs */
-        .nav-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 4px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            padding: 12px 22px;
-            background: none;
-            border: none;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-radius: 10px 10px 0 0;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn:hover { color: var(--primary); background: rgba(2, 132, 199, 0.05); }
-
-        .tab-btn.active {
-            color: var(--primary);
-            background: white;
-            border-bottom: 3px solid var(--primary);
-        }
-
-        .tab-content {
-            display: none;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 18px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .tab-content.active { display: block; }
+        /* Legacy tab button compatibility */
+        .nav-tabs { display: none; }
 
         /* Card Panels */
         .card-header {
@@ -420,25 +488,142 @@
         }
 
         .alert-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+
+        @media (max-width: 900px) {
+            .navbar {
+                width: 240px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .navbar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .top-header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 25px 20px 35px;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(15,23,42,0.45);
+                z-index: 999;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .top-header h2 {
+                font-size: 16px;
+            }
+
+            .top-header p {
+                display: none;
+            }
+
+            .container {
+                padding: 20px 14px 30px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-content {
+                padding: 18px;
+            }
+
+            .card-header {
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Header Navbar -->
-    <div class="navbar">
-        <div class="brand">
-            <i class="fa-solid fa-tooth"></i> Sunrise Dental Portal
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <aside class="navbar" id="sidebar">
+        <div class="navbar-top">
+            <div class="brand">
+                <i class="fa-solid fa-tooth"></i>
+                <span>Sunrise Dental Portal</span>
+            </div>
+
+            <div class="sidebar-title">Doctor Menu</div>
+
+            <div class="sidebar-nav">
+                <button id="tab-btn-appointments-tab" class="active" onclick="switchTab('appointments-tab')">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>My Appointments</span>
+                </button>
+
+                <button id="tab-btn-invoices-tab" onclick="switchTab('invoices-tab')">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>My Issued Invoices</span>
+                </button>
+
+                <button id="tab-btn-doc-guide-tab" onclick="switchTab('doc-guide-tab')">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span>Doctor Guide</span>
+                </button>
+            </div>
         </div>
-        <div class="user-info">
+
+        <div class="sidebar-bottom">
             <div class="user-profile">
                 <i class="fa-solid fa-user-md"></i>
                 <span>Dr. <%= fullName %></span>
             </div>
+
             <a href="LogoutServlet" class="btn-logout">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                Logout
             </a>
         </div>
-    </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <main class="main-content">
+        <div class="top-header">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <button class="mobile-menu" onclick="toggleSidebar()" aria-label="Open menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div>
+                    <h2>Doctor Dashboard</h2>
+                    <p>Manage appointments, invoices and patient billing</p>
+                </div>
+            </div>
+
+            <div style="font-size:12px; color:#64748b; font-weight:600;">
+                <i class="fa-regular fa-calendar"></i>
+                Sunrise Dental Clinic
+            </div>
+        </div>
 
     <div class="container">
 
@@ -481,19 +666,6 @@
                     <p>REST Connected</p>
                 </div>
             </div>
-        </div>
-
-        <!-- Navigation Tabs Bar -->
-        <div class="nav-tabs">
-            <button id="tab-btn-appointments-tab" class="tab-btn active" onclick="switchTab('appointments-tab')">
-                <i class="fa-solid fa-list-check"></i> My Appointments
-            </button>
-            <button id="tab-btn-invoices-tab" class="tab-btn" onclick="switchTab('invoices-tab')">
-                <i class="fa-solid fa-receipt"></i> My Issued Invoices
-            </button>
-            <button id="tab-btn-doc-guide-tab" class="tab-btn" onclick="switchTab('doc-guide-tab')">
-                <i class="fa-solid fa-circle-question"></i> Doctor Guide
-            </button>
         </div>
 
         <!-- TAB 1: APPOINTMENT WORKFLOW (FILTERED BY LOGGED IN DOCTOR) -->
@@ -738,7 +910,7 @@
             </div>
         </div>
 
-    </div>
+    </main>
 
     <!-- JavaScript REST API Integration & Dynamic UI -->
     <script>
