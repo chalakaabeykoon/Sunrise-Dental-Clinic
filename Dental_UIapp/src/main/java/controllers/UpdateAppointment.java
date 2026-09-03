@@ -14,30 +14,85 @@ import java.sql.PreparedStatement;
 @WebServlet("/UpdateAppointmentServlet")
 public class UpdateAppointment extends HttpServlet {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String apptNum = request.getParameter("appointmentNum");
-        String newStatus = request.getParameter("status");
+        // Get values submitted from the form
+        String appointmentNum = request.getParameter("appointmentNum");
+        String status = request.getParameter("status");
 
-        Connection conn = null;
+        // Validate input values
+        if (appointmentNum == null || appointmentNum.trim().isEmpty()
+                || status == null || status.trim().isEmpty()) {
+
+            response.sendRedirect("doctor_dashboard.jsp?msg=error");
+            return;
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
         try {
-            conn = DBUtil.getConnection();
-            String sql = "UPDATE appointments SET status = ? WHERE appointment_num = ?";
-            
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, newStatus);
-            stmt.setString(2, apptNum);
-            stmt.executeUpdate();
 
-            response.sendRedirect("doctor_dashboard.jsp?msg=updated");
+            // Create database connection
+            connection = DBUtil.getConnection();
+
+            // SQL query for updating appointment status
+            String updateSQL =
+                    "UPDATE appointments SET status = ? WHERE appointment_num = ?";
+
+            // Prepare SQL statement
+            preparedStatement = connection.prepareStatement(updateSQL);
+
+            // Set values
+            preparedStatement.setString(1, status.trim());
+            preparedStatement.setString(2, appointmentNum.trim());
+
+            // Execute update
+            int result = preparedStatement.executeUpdate();
+
+            // Check whether the appointment was updated
+            if (result > 0) {
+
+                response.sendRedirect(
+                        "doctor_dashboard.jsp?msg=updated"
+                );
+
+            } else {
+
+                response.sendRedirect(
+                        "doctor_dashboard.jsp?msg=error"
+                );
+            }
 
         } catch (Exception e) {
+
+            // Print error for debugging
             e.printStackTrace();
-            response.sendRedirect("doctor_dashboard.jsp?msg=error");
+
+            // Redirect to dashboard with error message
+            response.sendRedirect(
+                    "doctor_dashboard.jsp?msg=error"
+            );
+
         } finally {
-            DBUtil.closeConnection(conn);
+
+            // Close PreparedStatement
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Close database connection
+            if (connection != null) {
+                DBUtil.closeConnection(connection);
+            }
         }
     }
 }
