@@ -20,43 +20,53 @@ public class Login extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
 
+        request.setCharacterEncoding("UTF-8");
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
+
+        if (user == null || pass == null || user.trim().isEmpty() || pass.isEmpty()) {
+            request.setAttribute("errorMessage", "Username and password are required.");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            return;
+        }
 
         Connection conn = null;
         try {
             conn = DBUtil.getConnection();
             String query = "SELECT full_name, role FROM users WHERE username = ? AND password = ?";
             
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, user);
-            stmt.setString(2, pass);
-            
-            ResultSet rs = stmt.executeQuery();
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, user.trim());
+                stmt.setString(2, pass);
 
-            if (rs.next()) {
-                String fullName = rs.getString("full_name");
-                String role = rs.getString("role");
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (!rs.next()) {
+                        request.setAttribute("errorMessage", "Invalid username or password.");
+                        request.getRequestDispatcher("/login.jsp").forward(request, response);
+                        return;
+                    }
 
-                HttpSession session = request.getSession();
-                session.setAttribute("user", user);
-                session.setAttribute("fullName", fullName);
-                session.setAttribute("role", role);
+                    String fullName = rs.getString("full_name");
+                    String role = rs.getString("role");
 
-                if ("DOCTOR".equalsIgnoreCase(role)) {
-                    response.sendRedirect("doctor_dashboard.jsp");
-                } else {
-                    response.sendRedirect("staff_dashboard.jsp");
+                    HttpSession session = request.getSession(true);
+                    session.setAttribute("user", user.trim());
+                    session.setAttribute("fullName", fullName);
+                    session.setAttribute("role", role);
+
+                    String contextPath = request.getContextPath();
+                    if ("DOCTOR".equalsIgnoreCase(role)) {
+                        response.sendRedirect(contextPath + "/doctor_dashboard.jsp");
+                    } else {
+                        response.sendRedirect(contextPath + "/staff_dashboard.jsp");
+                    }
                 }
-            } else {
-                request.setAttribute("errorMessage", "Invalid Username or Password!");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("errorMessage", "Database Connection Error!");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.setAttribute("errorMessage", "Unable to connect to the database.");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         } finally {
             DBUtil.closeConnection(conn);
         }

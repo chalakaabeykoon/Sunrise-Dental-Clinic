@@ -1,0 +1,12 @@
+# Maven build output
+**/target/
+.build/
+
+# IDE metadata
+.idea/workspace.xml
+.idea/modules.xml
+.idea/copilot.data.migration.ask2agent.xml
+
+# Local environment files
+.env
+*.local

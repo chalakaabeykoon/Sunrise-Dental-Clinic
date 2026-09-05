@@ -8,7 +8,7 @@ public class DBUtil {
 
     private static final String URL = "jdbc:mysql://localhost:3306/sunrise_dental?useSSL=false&allowPublicKeyRetrieval=true";
     private static final String USER = "root";
-    private static final String PASSWORD = "12345"; 
+    private static final String PASSWORD = "12345";
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");

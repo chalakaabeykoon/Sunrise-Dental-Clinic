@@ -1,4 +1,4 @@
-</html><%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,15 +26,15 @@
         <i class="fa-solid fa-tooth logo-icon"></i>
         <h2>Portal Login</h2>
         
-        <form action="LoginServlet" method="POST">
+        <form action="${pageContext.request.contextPath}/LoginServlet" method="POST">
             <div class="input-group">
                 <label>Username</label>
-                <input type="text" name="username" placeholder="Enter username" required>
+                <input type="text" name="username" placeholder="Enter username" autocomplete="username" required>
             </div>
             
             <div class="input-group">
                 <label>Password</label>
-                <input type="password" name="password" placeholder="Enter password" required>
+                <input type="password" name="password" placeholder="Enter password" autocomplete="current-password" required>
             </div>
             
             <button type="submit" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>

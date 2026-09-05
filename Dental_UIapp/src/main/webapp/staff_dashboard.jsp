@@ -374,8 +374,8 @@
             const dropdown = document.getElementById('dentistDropdown');
             if (!dropdown) return;
 
-            const primaryUrl = 'http://localhost:8080/Sunrise_Dental_Clinic-1.0-SNAPSHOT/api/doctors';
-            const secondaryUrl = 'http://localhost:8080/Sunrise_Dental_Clinic/api/doctors';
+            const primaryUrl = `${window.location.origin}/Sunrise_Dental_Clinic/api/doctors`;
+            const secondaryUrl = `${window.location.origin}/Sunrise_Dental_Clinic-1.0-SNAPSHOT/api/doctors`;
 
             function renderDoctors(doctors) {
                 dropdown.innerHTML = '<option value="">-- Select Dentist --</option>';
