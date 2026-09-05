@@ -101,6 +101,19 @@
             transition: all 0.3s ease;
         }
 
+        .doctor-actions { display: flex; gap: 6px; white-space: nowrap; }
+        .doctor-action { border: 0; border-radius: 6px; padding: 7px 9px; color: white; cursor: pointer; font-size: 12px; }
+        .doctor-action.edit { background: #0284c7; }
+        .doctor-action.delete { background: #ef4444; }
+        .doctor-edit-modal { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(15, 23, 42, 0.45); align-items: center; justify-content: center; padding: 20px; }
+        .doctor-edit-modal.open { display: flex; }
+        .doctor-edit-card { background: white; border-radius: 10px; padding: 24px; width: min(560px, 100%); box-shadow: var(--shadow-lg); }
+        .doctor-edit-card h3 { margin-bottom: 18px; color: var(--secondary); }
+        .doctor-edit-actions { display: flex; gap: 10px; margin-top: 18px; }
+        .doctor-edit-actions button { border: 0; border-radius: 6px; padding: 10px 16px; cursor: pointer; font-weight: 700; }
+        .doctor-edit-actions .save { background: var(--primary); color: white; }
+        .doctor-edit-actions .cancel { background: #e2e8f0; color: var(--secondary); }
+
         .btn-logout:hover {
             background: #ef4444;
             color: white;
@@ -411,6 +424,19 @@
                 });
         }
 
+        function openDoctorEdit(doctorId, doctorName, location, telNo) {
+            document.getElementById('editDoctorId').value = doctorId;
+            document.getElementById('editDoctorIdDisplay').value = doctorId;
+            document.getElementById('editDoctorName').value = doctorName;
+            document.getElementById('editDoctorLocation').value = location;
+            document.getElementById('editDoctorTel').value = telNo;
+            document.getElementById('doctorEditModal').classList.add('open');
+        }
+
+        function closeDoctorEdit() {
+            document.getElementById('doctorEditModal').classList.remove('open');
+        }
+
         function printSingleBill(billId, apptNum, pName, treatment, consultFee, treatFee, total) {
             document.getElementById('prBillId').innerText = billId;
             document.getElementById('prDate').innerText = new Date().toLocaleString();
@@ -453,7 +479,7 @@
             
             if (status === 'appt_success' || status === 'appt_error') {
                 switchTab('add-appointment');
-            } else if (status === 'doc_success' || status === 'doc_error') {
+            } else if (status === 'doc_success' || status === 'doc_updated' || status === 'doc_deleted' || status === 'doc_error') {
                 switchTab('add-doctor');
             } else if (status === 'treat_success' || status === 'treat_error') {
                 switchTab('add-treatment');
@@ -491,6 +517,10 @@
             if ("doc_success".equals(status)) {
         %>
             <div class="alert alert-success"><i class="fa-solid fa-circle-check"></i> Doctor Registered Successfully!</div>
+        <% } else if ("doc_updated".equals(status)) { %>
+            <div class="alert alert-success"><i class="fa-solid fa-circle-check"></i> Doctor Details Updated Successfully!</div>
+        <% } else if ("doc_deleted".equals(status)) { %>
+            <div class="alert alert-success"><i class="fa-solid fa-circle-check"></i> Doctor Profile Deleted Successfully!</div>
         <% } else if ("doc_error".equals(status)) { %>
             <div class="alert alert-error"><i class="fa-solid fa-circle-xmark"></i> Failed to Register Doctor!</div>
         <% } else if ("treat_success".equals(status)) { %>
@@ -592,6 +622,7 @@
                             <th>Doctor Name</th>
                             <th>Location / Branch</th>
                             <th>Telephone No.</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -608,16 +639,47 @@
                             <td><strong><%= rs.getString("doctor_name") %></strong></td>
                             <td><i class="fa-solid fa-location-dot" style="color:var(--text-muted); margin-right:4px;"></i> <%= rs.getString("location") %></td>
                             <td><i class="fa-solid fa-phone" style="color:var(--text-muted); margin-right:4px;"></i> <%= rs.getString("tel_no") %></td>
+                            <td>
+                                <div class="doctor-actions">
+                                    <button type="button" class="doctor-action edit" title="Edit doctor"
+                                            onclick="openDoctorEdit('<%= rs.getString("doctor_id").replace("'", "\\'") %>', '<%= rs.getString("doctor_name").replace("'", "\\'") %>', '<%= rs.getString("location").replace("'", "\\'") %>', '<%= rs.getString("tel_no").replace("'", "\\'") %>')">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <form action="DeleteDoctorServlet" method="POST" onsubmit="return confirm('Delete this doctor profile?');" style="display:inline;">
+                                        <input type="hidden" name="doctorId" value="<%= rs.getString("doctor_id") %>">
+                                        <button type="submit" class="doctor-action delete" title="Delete doctor"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                         <%      }
                             } catch(Exception e) { 
-                                out.println("<tr><td colspan='4'>No doctors found in database.</td></tr>"); 
+                                out.println("<tr><td colspan='5'>No doctors found in database.</td></tr>"); 
                             } finally {
                                 DBUtil.closeConnection(conn1);
                             }
                         %>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <div id="doctorEditModal" class="doctor-edit-modal" role="dialog" aria-modal="true" aria-labelledby="doctorEditTitle">
+            <div class="doctor-edit-card">
+                <h3 id="doctorEditTitle"><i class="fa-solid fa-user-pen"></i> Edit Doctor</h3>
+                <form action="UpdateDoctorServlet" method="POST">
+                    <input type="hidden" id="editDoctorId" name="doctorId">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Doctor ID</label><input type="text" id="editDoctorIdDisplay" disabled></div>
+                        <div class="form-group"><label>Doctor Full Name</label><input type="text" id="editDoctorName" name="doctorName" required></div>
+                        <div class="form-group"><label>Location / Operating Branch</label><input type="text" id="editDoctorLocation" name="location" required></div>
+                        <div class="form-group"><label>Contact Telephone No.</label><input type="text" id="editDoctorTel" name="telNo" pattern="\d{10,15}" required></div>
+                    </div>
+                    <div class="doctor-edit-actions">
+                        <button type="submit" class="save"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+                        <button type="button" class="cancel" onclick="closeDoctorEdit()">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
 
